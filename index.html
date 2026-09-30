@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sahabat Haid Muslimah - Special Edition</title>
+  <title>Sahabat Haid Muslimah - Blue Panda Edition</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,14 +16,13 @@
         extend: {
           colors: {
             panda: {
-              pink: '#FFB7C5',
-              softpink: '#FFF0F3',
-              darkpink: '#FF6B8B',
+              blue: '#3B82F6',        // Biru Utama
+              softblue: '#EBF8FF',    // Background Lembut
+              darkblue: '#1E40AF',    // Teks / Header Biru Tua
+              iceblue: '#D1E9F6',     // Card / Aksesori
               mint: '#D8F3DC',
-              darkmint: '#40916C',
-              cream: '#FFF9EF',
-              black: '#2D3142',
-              gray: '#8D99AE'
+              black: '#1E293B',
+              gray: '#64748B'
             }
           },
           fontFamily: {
@@ -43,8 +42,8 @@
   <style>
     body {
       font-family: 'Quicksand', sans-serif;
-      background-color: #FFF0F3;
-      background-image: radial-gradient(#FFD6FF 1px, transparent 1px);
+      background-color: #F0F9FF;
+      background-image: radial-gradient(#BAE6FD 1px, transparent 1px);
       background-size: 20px 20px;
     }
     .font-title { font-family: 'Fredoka', cursive; }
@@ -61,22 +60,20 @@
   <script type="text/babel">
     const { useState, useEffect, useMemo } = React;
 
-    // Kata-kata bawaan (Default)
     const DEFAULT_MOOD_BOOSTERS = [
-      "Semangat yaa cantiknya aku! Biar sistem yang hitungkan fiqh-nya, kamu cukup istirahat & makan yang enak! 🐼🍓",
-      "Meskipun lagi libur shalat, pahala kamu tetap mengalir lewat dzikir & bershalawat lho! 🌸✨",
-      "Panda kirim pelukan hangat nih biar rasa nyeri perut kamu berkurang! 🤗💖",
-      "Kamu hebat banget hari ini. Kalo capek, istirahat dulu yaa sayang! 🌿🎀",
-      "Inget minum air hangat & jangan lupa ngemil cokelat favorit kamu! 🍫🐼"
+      "Semangat yaa cantiknya aku! Biar sistem yang hitungkan fiqh-nya, kamu cukup istirahat & minum air hangat! 🐼💙",
+      "Meskipun lagi libur shalat, pahala kamu tetap mengalir lewat dzikir & shalawat lho! 🌿✨",
+      "Panda kirim pelukan hangat nih biar rasa pusing/nyeri kamu berkurang! 🤗❄️",
+      "Kamu hebat banget hari ini. Kalo capek, istirahat dulu yaa sayang! 💙✨",
+      "Jangan lupa ngemil makanan favorit kamu & jaga kesehatan ya! 🍫🐼"
     ];
 
     function App() {
       const today = new Date();
       const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
       
-      // Riwayat Jadwal Haid
       const [records, setRecords] = useState(() => {
-        const saved = localStorage.getItem('panda_haid_records_v3');
+        const saved = localStorage.getItem('panda_haid_records_blue');
         if (saved) {
           try { return JSON.parse(saved); } catch (e) {}
         }
@@ -92,9 +89,8 @@
         ];
       });
 
-      // Custom Mood Boosters dari Pacar
       const [boosters, setBoosters] = useState(() => {
-        const saved = localStorage.getItem('panda_custom_boosters');
+        const saved = localStorage.getItem('panda_custom_boosters_blue');
         if (saved) {
           try { return JSON.parse(saved); } catch (e) {}
         }
@@ -112,42 +108,39 @@
       const [moodIndex, setMoodIndex] = useState(0);
       const [fiqhModalOpen, setFiqhModalOpen] = useState(false);
 
-      // Simpan Data
       useEffect(() => {
-        localStorage.setItem('panda_haid_records_v3', JSON.stringify(records));
+        localStorage.setItem('panda_haid_records_blue', JSON.stringify(records));
       }, [records]);
 
       useEffect(() => {
-        localStorage.setItem('panda_custom_boosters', JSON.stringify(boosters));
+        localStorage.setItem('panda_custom_boosters_blue', JSON.stringify(boosters));
       }, [boosters]);
 
-      // --- ENGINE KALKULASI & ESTIMASI DURASI HAID ---
+      // --- ENGINE PERHITUNGAN ESTIMASI ---
       const statsAndPredictions = useMemo(() => {
         if (records.length === 0) {
-          return { avgDurationDays: 7, avgCycleDays: 28, nextPredictedStart: null };
+          return { avgDurationDays: 7, nextPredictedStart: null };
         }
 
         let totalDurationHours = 0;
-        let validCompletedRecords = 0;
+        let validRecordsCount = 0;
 
         records.forEach(rec => {
           if (rec.startDate && rec.endDate) {
             const start = new Date(rec.startDate);
             const end = new Date(rec.endDate);
             const hours = (end - start) / (1000 * 60 * 60);
-            if (hours >= 24 && hours <= 360) { // Hanya hitung jika sah haid (24j - 15hr)
+            if (hours >= 24 && hours <= 360) {
               totalDurationHours += hours;
-              validCompletedRecords++;
+              validRecordsCount++;
             }
           }
         });
 
-        // Rata-rata durasi haid (dalam hari)
-        const avgDurationDays = validCompletedRecords > 0 
-          ? Math.round((totalDurationHours / validCompletedRecords) / 24) 
-          : 7; // Default adah umum = 7 hari
+        const avgDurationDays = validRecordsCount > 0 
+          ? Math.round((totalDurationHours / validRecordsCount) / 24) 
+          : 7;
 
-        // Perkiraan Siklus Berikutnya (berdasarkan data awal haid terakhir + 28-30 hari)
         const sortedRecords = [...records].sort((a,b) => new Date(b.startDate) - new Date(a.startDate));
         const lastRecord = sortedRecords[0];
         
@@ -155,16 +148,13 @@
         if (lastRecord && lastRecord.startDate) {
           const lastStart = new Date(lastRecord.startDate);
           nextPredictedStart = new Date(lastStart);
-          nextPredictedStart.setDate(nextPredictedStart.getDate() + 28); // Estimasi standar siklus 28 hari
+          nextPredictedStart.setDate(nextPredictedStart.getDate() + 28);
         }
 
-        return {
-          avgDurationDays,
-          nextPredictedStart
-        };
+        return { avgDurationDays, nextPredictedStart };
       }, [records]);
 
-      // --- MAP KALENDER DENGAN HUKUM FIQH NU ---
+      // --- MAP KALENDER DENGAN PERHITUNGAN PRESISI TANGGAL ---
       const calculatedCalendarMap = useMemo(() => {
         const map = {};
 
@@ -173,23 +163,22 @@
 
           const start = new Date(rec.startDate);
           const end = rec.endDate ? new Date(rec.endDate) : new Date();
-          
           const durationHours = (end - start) / (1000 * 60 * 60);
 
-          let curr = new Date(start);
-          curr.setHours(0,0,0,0);
-          
-          const lastDay = new Date(end);
-          lastDay.setHours(0,0,0,0);
+          let curr = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+          const lastDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
 
           let dayCounter = 1;
 
           while (curr <= lastDay) {
-            const key = `${curr.getFullYear()}-${String(curr.getMonth()+1).padStart(2,'0')}-${String(curr.getDate()).padStart(2,'0')}`;
-            
+            const y = curr.getFullYear();
+            const m = String(curr.getMonth() + 1).padStart(2, '0');
+            const d = String(curr.getDate()).padStart(2, '0');
+            const key = `${y}-${m}-${d}`;
+
             let status = 'haid';
             let hukum = 'Sah Haid';
-            let color = 'bg-pink-400 text-white border-pink-500';
+            let color = 'bg-blue-500 text-white border-blue-600';
             let badgeText = `Hari ke-${dayCounter}`;
 
             if (durationHours < 24) {
@@ -199,7 +188,7 @@
             } else if (dayCounter > 15) {
               status = 'istihadhah';
               hukum = 'Istihadhah (>15 Hari)';
-              color = 'bg-purple-500 text-white border-purple-600';
+              color = 'bg-purple-600 text-white border-purple-700';
               badgeText = 'Istihadhah ⚠️';
             }
 
@@ -220,10 +209,16 @@
         return map;
       }, [records]);
 
-      const todayKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+      const formatKey = (dateObj) => {
+        const y = dateObj.getFullYear();
+        const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const d = String(dateObj.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      };
+
+      const todayKey = formatKey(today);
       const todayStatus = calculatedCalendarMap[todayKey];
 
-      // Tambah / Hapus Pesan Mood Booster
       const handleAddBooster = () => {
         if (!newBoosterText.trim()) return;
         setBoosters([...boosters, newBoosterText.trim()]);
@@ -232,22 +227,20 @@
 
       const handleDeleteBooster = (index) => {
         if (boosters.length <= 1) return alert('Minimal harus ada 1 pesan!');
-        const updated = boosters.filter((_, i) => i !== index);
-        setBoosters(updated);
+        setBoosters(boosters.filter((_, i) => i !== index));
         setMoodIndex(0);
       };
 
       const handleAddRecord = () => {
-        if (!startDateInput) return alert('Silakan masukkan tanggal & jam awal keluar darah!');
+        if (!startDateInput) return alert('Silakan masukkan tanggal & jam awal!');
         
-        const newRecord = {
+        setRecords([...records, {
           id: Date.now().toString(),
           startDate: startDateInput,
           endDate: endDateInput || null,
           note: noteInput
-        };
+        }]);
 
-        setRecords([...records, newRecord]);
         setModalOpen(false);
         setStartDateInput('');
         setEndDateInput('');
@@ -257,11 +250,11 @@
           particleCount: 50,
           spread: 60,
           origin: { y: 0.6 },
-          colors: ['#FFB7C5', '#D8F3DC']
+          colors: ['#3B82F6', '#93C5FD']
         });
       };
 
-      // Render Hari Kalender
+      // RENDER KALENDER
       const renderDays = () => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
@@ -271,28 +264,29 @@
         const days = [];
 
         for (let i = 0; i < firstDay; i++) {
-          days.push(<div key={`empty-${i}`} className="h-20 bg-panda-softpink/30 rounded-2xl border border-transparent"></div>);
+          days.push(<div key={`empty-${i}`} className="h-20 bg-panda-softblue/30 rounded-2xl border border-transparent"></div>);
         }
 
         for (let d = 1; d <= daysInMonth; d++) {
-          const key = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+          const dateObj = new Date(year, month, d);
+          const key = formatKey(dateObj);
           const calc = calculatedCalendarMap[key];
           const isToday = todayKey === key;
 
-          let bgStyle = "bg-white hover:bg-panda-softpink border-panda-pink/20";
+          let bgStyle = "bg-white hover:bg-panda-softblue border-blue-100";
           if (calc) bgStyle = `${calc.color} shadow-sm`;
 
           days.push(
             <div
               key={d}
-              className={`h-20 p-2 rounded-2xl border transition-all flex flex-col justify-between relative overflow-hidden ${bgStyle} ${isToday ? 'ring-4 ring-panda-darkpink ring-offset-2' : ''}`}
+              className={`h-20 p-2 rounded-2xl border transition-all flex flex-col justify-between relative overflow-hidden ${bgStyle} ${isToday ? 'ring-4 ring-panda-blue ring-offset-2' : ''}`}
             >
               <div className="flex justify-between items-center">
                 <span className={`font-title font-bold text-lg ${calc ? 'text-white' : 'text-panda-black'}`}>
                   {d}
                 </span>
                 {isToday && (
-                  <span className="bg-panda-darkpink text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase">
+                  <span className="bg-panda-darkblue text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase">
                     Hari Ini
                   </span>
                 )}
@@ -303,7 +297,7 @@
                   {calc.badgeText}
                 </div>
               ) : (
-                <div className="text-[10px] text-emerald-600 font-bold bg-emerald-50 rounded-md py-0.5 text-center border border-emerald-200">
+                <div className="text-[10px] text-emerald-700 font-bold bg-emerald-50 rounded-md py-0.5 text-center border border-emerald-200">
                   Suci 🌸
                 </div>
               )}
@@ -320,14 +314,14 @@
         <div className="max-w-5xl mx-auto px-4 pt-6">
           
           {/* HEADER */}
-          <header className="bg-white rounded-3xl p-6 shadow-xl border-2 border-panda-pink/30 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <header className="bg-white rounded-3xl p-6 shadow-xl border-2 border-panda-blue/20 mb-6 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-panda-softpink rounded-2xl flex items-center justify-center border-2 border-panda-pink/50 shadow-inner">
+              <div className="w-16 h-16 bg-panda-softblue rounded-2xl flex items-center justify-center border-2 border-panda-blue/30 shadow-inner">
                 <span className="text-4xl panda-bounce">🐼</span>
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-title font-bold text-panda-black">
+                  <h1 className="text-2xl font-title font-bold text-panda-darkblue">
                     Sahabat Haid Muslimah
                   </h1>
                   <span className="bg-emerald-100 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-full border border-emerald-300">
@@ -335,7 +329,7 @@
                   </span>
                 </div>
                 <p className="text-sm text-panda-gray font-medium mt-0.5">
-                  Aplikasi Khusus Perhatian Haid & Syariat Muslimah 💖
+                  Aplikasi Catatan Haid & Perhatian Khusus 💙
                 </p>
               </div>
             </div>
@@ -343,13 +337,13 @@
             <div className="flex gap-2 w-full md:w-auto">
               <button 
                 onClick={() => setModalOpen(true)}
-                className="flex-1 md:flex-none bg-panda-darkpink hover:bg-pink-600 text-white font-title font-bold px-5 py-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2"
+                className="flex-1 md:flex-none bg-panda-blue hover:bg-blue-600 text-white font-title font-bold px-5 py-3 rounded-2xl shadow-md transition-all flex items-center justify-center gap-2"
               >
                 <span>➕</span> Input Tanggal Haid
               </button>
               <button 
                 onClick={() => setFiqhModalOpen(true)}
-                className="bg-panda-softpink border-2 border-panda-pink/40 text-panda-darkpink font-title font-bold px-4 py-3 rounded-2xl hover:bg-panda-pink/30"
+                className="bg-panda-softblue border-2 border-panda-blue/30 text-panda-darkblue font-title font-bold px-4 py-3 rounded-2xl hover:bg-blue-100"
                 title="Panduan Fiqh"
               >
                 📖
@@ -357,11 +351,11 @@
             </div>
           </header>
 
-          {/* DASHBOARD RINGKASAN & ESTIMASI SISTEM */}
+          {/* RINGKASAN & MOOD BOOSTER */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             
-            {/* Kartu Status & Estimasi Otomatis */}
-            <div className="bg-white rounded-3xl p-5 shadow-lg border-2 border-panda-pink/20 flex flex-col justify-between">
+            {/* Status & Estimasi Otomatis */}
+            <div className="bg-white rounded-3xl p-5 shadow-lg border-2 border-panda-blue/20 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between text-xs font-bold text-panda-gray uppercase mb-2">
                   <span>Perhitungan & Estimasi Sistem</span>
@@ -381,14 +375,14 @@
                       </div>
                     </div>
 
-                    <div className="p-3 bg-panda-softpink rounded-xl text-xs text-panda-black leading-relaxed">
+                    <div className="p-3 bg-blue-50 rounded-xl text-xs text-panda-black leading-relaxed border border-blue-100">
                       {todayStatus.status === 'istihadhah' ? (
                         <p className="text-purple-900 font-bold">
                           ⚠️ Melebihi 15 hari! Terkena hukum Istihadhah (Wajib Mandi & Shalat).
                         </p>
                       ) : (
-                        <p className="text-pink-800 font-semibold">
-                          🌸 Sah Haid. Dilarang shalat & puasa. Perbanyak dzikir & istirahat ya!
+                        <p className="text-blue-900 font-semibold">
+                          💧 Sah Haid. Dilarang shalat & puasa. Perbanyak dzikir & istirahat ya!
                         </p>
                       )}
                     </div>
@@ -408,11 +402,11 @@
                 )}
               </div>
 
-              {/* ESTIMASI SISTEM UNTUK PENGGUNA */}
-              <div className="mt-4 pt-3 border-t border-panda-pink/20 space-y-1.5">
+              {/* ESTIMASI */}
+              <div className="mt-4 pt-3 border-t border-panda-blue/20 space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-panda-gray font-semibold">Estimasi Lama Haid:</span>
-                  <span className="font-title font-bold text-panda-darkpink">
+                  <span className="font-title font-bold text-panda-blue">
                     ± {statsAndPredictions.avgDurationDays} Hari
                   </span>
                 </div>
@@ -427,33 +421,33 @@
               </div>
             </div>
 
-            {/* Panda Mood Booster (Customizable) */}
-            <div className="bg-gradient-to-br from-pink-100 to-panda-softpink rounded-3xl p-5 shadow-lg border-2 border-panda-pink/30 md:col-span-2 flex flex-col justify-between">
+            {/* Mood Booster Panda (Biru) */}
+            <div className="bg-gradient-to-br from-blue-100 to-panda-softblue rounded-3xl p-5 shadow-lg border-2 border-panda-blue/30 md:col-span-2 flex flex-col justify-between">
               <div>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
                     <span className="text-3xl">🐼</span>
-                    <span className="bg-panda-pink/40 text-panda-black font-bold text-[11px] px-2.5 py-0.5 rounded-full">
-                      Panda Mood Booster 💕
+                    <span className="bg-blue-200 text-panda-darkblue font-bold text-[11px] px-2.5 py-0.5 rounded-full">
+                      Panda Mood Booster 💙
                     </span>
                   </div>
                   <button 
                     onClick={() => setEditBoosterModalOpen(true)}
-                    className="text-xs bg-white text-panda-darkpink border border-panda-pink/40 font-title font-bold px-3 py-1 rounded-xl hover:bg-panda-softpink"
+                    className="text-xs bg-white text-panda-blue border border-panda-blue/30 font-title font-bold px-3 py-1 rounded-xl hover:bg-panda-softblue"
                   >
                     ✏️ Edit Kata-kata
                   </button>
                 </div>
 
-                <p className="text-sm font-semibold text-panda-black mt-3 italic leading-relaxed bg-white/60 p-3 rounded-2xl border border-panda-pink/20">
+                <p className="text-sm font-semibold text-panda-black mt-3 italic leading-relaxed bg-white/70 p-3 rounded-2xl border border-panda-blue/20">
                   "{boosters[moodIndex] || boosters[0]}"
                 </p>
               </div>
 
-              <div className="flex justify-end items-center mt-4 pt-2 border-t border-panda-pink/20">
+              <div className="flex justify-end items-center mt-4 pt-2 border-t border-panda-blue/20">
                 <button
                   onClick={() => setMoodIndex((prev) => (prev + 1) % boosters.length)}
-                  className="bg-white border border-panda-pink/40 text-panda-darkpink font-title font-bold text-xs px-3 py-1.5 rounded-xl hover:bg-panda-softpink"
+                  className="bg-white border border-panda-blue/30 text-panda-blue font-title font-bold text-xs px-3 py-1.5 rounded-xl hover:bg-panda-softblue"
                 >
                   🐼 Baca Pesan Lain
                 </button>
@@ -463,34 +457,34 @@
           </div>
 
           {/* KALENDER */}
-          <main className="bg-white rounded-3xl p-6 shadow-xl border-2 border-panda-pink/20">
+          <main className="bg-white rounded-3xl p-6 shadow-xl border-2 border-panda-blue/20">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <button 
                   onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))}
-                  className="w-10 h-10 rounded-2xl bg-panda-softpink border border-panda-pink/30 font-bold hover:bg-panda-pink/30"
+                  className="w-10 h-10 rounded-2xl bg-panda-softblue border border-panda-blue/30 font-bold hover:bg-blue-100 text-panda-darkblue"
                 >
                   ◀
                 </button>
-                <h2 className="text-2xl font-title font-bold text-panda-black min-w-[180px] text-center">
+                <h2 className="text-2xl font-title font-bold text-panda-darkblue min-w-[180px] text-center">
                   {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                 </h2>
                 <button 
                   onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))}
-                  className="w-10 h-10 rounded-2xl bg-panda-softpink border border-panda-pink/30 font-bold hover:bg-panda-pink/30"
+                  className="w-10 h-10 rounded-2xl bg-panda-softblue border border-panda-blue/30 font-bold hover:bg-blue-100 text-panda-darkblue"
                 >
                   ▶
                 </button>
               </div>
 
               <div className="hidden sm:flex items-center gap-3 text-xs font-bold text-panda-gray">
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-pink-400"></span> Sah Haid</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-purple-500"></span> Istihadhah</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-emerald-400"></span> Masa Suci</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-blue-500"></span> Sah Haid</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-purple-600"></span> Istihadhah</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-emerald-500"></span> Masa Suci</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-7 gap-2 mb-2 text-center font-title font-bold text-xs text-panda-darkpink uppercase">
+            <div className="grid grid-cols-7 gap-2 mb-2 text-center font-title font-bold text-xs text-panda-blue uppercase">
               <div>Ahad</div><div>Senin</div><div>Selasa</div><div>Rabu</div><div>Kamis</div><div>Jumat</div><div>Sabtu</div>
             </div>
 
@@ -499,31 +493,31 @@
             </div>
           </main>
 
-          {/* MODAL EDIT KATA-KATA MOOD BOOSTER */}
+          {/* MODAL EDIT KATA-KATA */}
           {editBoosterModalOpen && (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border-4 border-panda-pink/40 relative max-h-[85vh] overflow-y-auto">
-                <button onClick={() => setEditBoosterModalOpen(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-panda-softpink font-bold">✕</button>
+              <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border-4 border-panda-blue/30 relative max-h-[85vh] overflow-y-auto">
+                <button onClick={() => setEditBoosterModalOpen(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-panda-softblue font-bold text-panda-darkblue">✕</button>
                 
-                <h3 className="text-xl font-title font-bold text-panda-black mb-1">
+                <h3 className="text-xl font-title font-bold text-panda-darkblue mb-1">
                   ✏️ Custom Pesan Perhatian Panda
                 </h3>
                 <p className="text-xs text-panda-gray mb-4 font-medium">
-                  Tulis pesan manis dari kamu sendiri biar dia makin happy saat buka aplikasi ini! 💖
+                  Tulis pesan manis dari kamu sendiri biar pacar kamu makin senang! 💙
                 </p>
 
                 <div className="space-y-4">
                   <div className="flex gap-2">
                     <input 
                       type="text" 
-                      placeholder="Tulis ucapan perhatian kamu di sini..."
+                      placeholder="Tulis ucapan perhatian kamu..."
                       value={newBoosterText}
                       onChange={(e) => setNewBoosterText(e.target.value)}
-                      className="flex-1 bg-panda-softpink border-2 border-panda-pink/40 rounded-xl p-2.5 text-xs font-bold focus:outline-none"
+                      className="flex-1 bg-panda-softblue border-2 border-panda-blue/30 rounded-xl p-2.5 text-xs font-bold focus:outline-none"
                     />
                     <button 
                       onClick={handleAddBooster}
-                      className="bg-panda-darkpink text-white font-title font-bold text-xs px-4 rounded-xl hover:bg-pink-600"
+                      className="bg-panda-blue text-white font-title font-bold text-xs px-4 rounded-xl hover:bg-blue-600"
                     >
                       Tambah
                     </button>
@@ -532,7 +526,7 @@
                   <div className="space-y-2 mt-4">
                     <p className="text-xs font-bold uppercase text-panda-gray">Daftar Pesan Saat Ini:</p>
                     {boosters.map((b, idx) => (
-                      <div key={idx} className="p-3 bg-panda-softpink/60 rounded-xl border border-panda-pink/20 flex items-center justify-between gap-2 text-xs">
+                      <div key={idx} className="p-3 bg-panda-softblue/60 rounded-xl border border-panda-blue/20 flex items-center justify-between gap-2 text-xs">
                         <span className="font-semibold text-panda-black">{b}</span>
                         <button 
                           onClick={() => handleDeleteBooster(idx)}
@@ -552,10 +546,10 @@
           {/* MODAL INPUT JADWAL */}
           {modalOpen && (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border-4 border-panda-pink/40 relative">
-                <button onClick={() => setModalOpen(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-panda-softpink font-bold">✕</button>
+              <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border-4 border-panda-blue/30 relative">
+                <button onClick={() => setModalOpen(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-panda-softblue font-bold text-panda-darkblue">✕</button>
 
-                <h3 className="text-xl font-title font-bold text-panda-black mb-1">
+                <h3 className="text-xl font-title font-bold text-panda-darkblue mb-1">
                   Masukkan Tanggal & Jam
                 </h3>
                 <p className="text-xs text-panda-gray mb-4 font-medium">
@@ -571,7 +565,7 @@
                       type="datetime-local" 
                       value={startDateInput}
                       onChange={(e) => setStartDateInput(e.target.value)}
-                      className="w-full bg-panda-softpink border-2 border-panda-pink/40 rounded-xl p-2.5 text-sm font-bold focus:outline-none"
+                      className="w-full bg-panda-softblue border-2 border-panda-blue/30 rounded-xl p-2.5 text-sm font-bold focus:outline-none"
                     />
                   </div>
 
@@ -583,7 +577,7 @@
                       type="datetime-local" 
                       value={endDateInput}
                       onChange={(e) => setEndDateInput(e.target.value)}
-                      className="w-full bg-panda-softpink border-2 border-panda-pink/40 rounded-xl p-2.5 text-sm font-bold focus:outline-none"
+                      className="w-full bg-panda-softblue border-2 border-panda-blue/30 rounded-xl p-2.5 text-sm font-bold focus:outline-none"
                     />
                   </div>
 
@@ -596,13 +590,13 @@
                       placeholder="Contoh: Nyeri perut / Flek"
                       value={noteInput}
                       onChange={(e) => setNoteInput(e.target.value)}
-                      className="w-full bg-panda-softpink border-2 border-panda-pink/40 rounded-xl p-2.5 text-sm font-bold focus:outline-none"
+                      className="w-full bg-panda-softblue border-2 border-panda-blue/30 rounded-xl p-2.5 text-sm font-bold focus:outline-none"
                     />
                   </div>
 
                   <button
                     onClick={handleAddRecord}
-                    className="w-full py-3 bg-panda-darkpink text-white font-title font-bold rounded-2xl shadow-md hover:bg-pink-600 transition-all text-sm mt-2"
+                    className="w-full py-3 bg-panda-blue text-white font-title font-bold rounded-2xl shadow-md hover:bg-blue-600 transition-all text-sm mt-2"
                   >
                     Simpan Data 🐼
                   </button>
@@ -615,9 +609,9 @@
           {/* MODAL FIQH */}
           {fiqhModalOpen && (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-              <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border-4 border-panda-pink/40 relative">
-                <button onClick={() => setFiqhModalOpen(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-panda-softpink font-bold">✕</button>
-                <h3 className="text-xl font-title font-bold text-panda-black mb-3">Panduan Syariat Fiqh NU</h3>
+              <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl border-4 border-panda-blue/30 relative">
+                <button onClick={() => setFiqhModalOpen(false)} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-panda-softblue font-bold text-panda-darkblue">✕</button>
+                <h3 className="text-xl font-title font-bold text-panda-darkblue mb-3">Panduan Syariat Fiqh NU</h3>
                 <div className="text-xs space-y-2 text-panda-black leading-relaxed">
                   <p><strong>1. Minimal Haid:</strong> 24 jam (1 hari 1 malam).</p>
                   <p><strong>2. Maksimal Haid:</strong> 15 hari 15 malam (360 jam).</p>
@@ -635,9 +629,4 @@
   </script>
 </body>
 </html>
-```eof
-
-### Keunggulan Fitur Baru Ini:
-1. **Fitur Edit Pesan Panda:** Pasangan kamu bisa menekan tombol **"✏️ Edit Kata-kata"** untuk membaca pesan romantis dari kamu, atau kamu sendiri bisa mengetikkan dulu pesan-pesan perhatianmu sebelum memberikan tautan websitenya ke dia.
-2. **Hitung Rata-Rata Lama Haid Otomatis:** Sistem membaca riwayat haid yang pernah diinput dan menghitung estimasi rata-rata durasi haidnya (misal: "± 7 Hari").
-3. **Prediksi Tanggal Haid Berikutnya:** Menghitung estimasi tanggal mulainya haid di bulan berikutnya berdasarkan siklus standar 28 hari.
+.
