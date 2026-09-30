@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<title>Dompet Santri</title>
+<title>Menteri Keuangan Keluarga</title>
 
 <!-- Pengaturan PWA & Standalone iOS Safari -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Dompet Santri">
-<link rel="apple-touch-icon" href="https://fav.farm/🕌">
+<meta name="apple-mobile-web-app-title" content="Menteri Keuangan Keluarga">
+<link rel="apple-touch-icon" href="https://fav.farm/💑">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -35,13 +35,21 @@ tailwind.config = {
 </head>
 <body class="text-slate-800 antialiased min-h-screen pb-24">
 
+<!-- MASUKKAN LINK FOTO PROFIL DI SINI -->
+<script>
+  const PROFILE_PHOTO_URL = "https://i.postimg.cc/m2Hj0J5k/foto-profil.jpg"; // Ganti dengan link foto kalian jika ada
+</script>
+
 <header class="bg-gradient-to-r from-santri-900 via-santri-800 to-teal-900 text-white sticky top-0 z-40 shadow-lg">
   <div class="max-w-md mx-auto px-4 py-3.5 flex justify-between items-center">
     <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl bg-santri-gold/20 border border-santri-gold/40 flex items-center justify-center text-lg">🕌</div>
+      <!-- Foto Profil Header -->
+      <div class="relative w-11 h-11 rounded-full border-2 border-santri-gold/80 overflow-hidden bg-emerald-800 flex-shrink-0 shadow-md">
+        <img id="header-avatar" src="" alt="Foto Profil" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-lg bg-santri-gold/20\'>💑</div>';">
+      </div>
       <div>
-        <h1 class="font-bold text-base leading-tight text-amber-300">Dompet Santri</h1>
-        <p class="text-[11px] text-emerald-100/80">Catatan uang saku &amp; investasi</p>
+        <h1 class="font-bold text-base leading-tight text-amber-300">Menteri Keuangan Keluarga</h1>
+        <p class="text-[11px] text-emerald-100/80">Kelola Anggaran &amp; Masa Depan Bersama</p>
       </div>
     </div>
     <div class="flex gap-1.5">
@@ -55,11 +63,11 @@ tailwind.config = {
 
   <!-- Ringkasan Saldo -->
   <div class="bg-gradient-to-br from-santri-800 via-santri-900 to-slate-900 rounded-3xl p-5 text-white shadow-xl relative overflow-hidden border border-emerald-700/40">
-    <span class="text-[11px] text-emerald-200 uppercase tracking-wider font-semibold">Sisa Uang Saku</span>
+    <span class="text-[11px] text-emerald-200 uppercase tracking-wider font-semibold">Sisa Uang Kas Keluarga</span>
     <h2 id="display-sisa" class="text-3xl font-extrabold text-santri-gold tracking-tight mt-0.5 mb-3">Rp 0</h2>
     <div class="grid grid-cols-2 gap-2.5 pt-3 border-t border-emerald-700/50 text-xs">
       <div class="bg-emerald-950/40 rounded-xl p-2.5 border border-emerald-700/30">
-        <p class="text-[10px] text-emerald-200/80">Total Uang Saku</p>
+        <p class="text-[10px] text-emerald-200/80">Total Pemasukan</p>
         <p id="display-saku" class="font-bold text-emerald-100 text-sm mt-0.5">Rp 0</p>
       </div>
       <div class="bg-emerald-950/40 rounded-xl p-2.5 border border-emerald-700/30">
@@ -141,7 +149,7 @@ tailwind.config = {
     <form onsubmit="tambahTransaksi(event)" class="space-y-3">
       <div class="grid grid-cols-2 gap-2">
         <button type="button" onclick="setType('pengeluaran')" id="btn-pengeluaran" class="py-2 px-3 rounded-xl text-xs font-bold transition-all">⬆ Pengeluaran</button>
-        <button type="button" onclick="setType('pemasukan')" id="btn-pemasukan" class="py-2 px-3 rounded-xl text-xs font-bold transition-all">⬇ Pemasukan / Saku</button>
+        <button type="button" onclick="setType('pemasukan')" id="btn-pemasukan" class="py-2 px-3 rounded-xl text-xs font-bold transition-all">⬇ Pemasukan / Gaji</button>
       </div>
       <div>
         <label class="lbl">Pilih Kategori</label>
@@ -159,7 +167,7 @@ tailwind.config = {
       </div>
       <div>
         <label class="lbl">Keterangan Catatan</label>
-        <input type="text" id="input-catatan" placeholder="Misal: Beli lauk matang / Tabungan darurat" required class="inp">
+        <input type="text" id="input-catatan" placeholder="Misal: Belanja bulanan / Tabungan darurat" required class="inp">
       </div>
       <button type="submit" class="w-full bg-santri-800 hover:bg-santri-900 active:scale-[0.99] text-white font-bold py-2.5 rounded-xl text-xs shadow-md">➕ Simpan Catatan</button>
     </form>
@@ -199,10 +207,10 @@ tailwind.config = {
     <div class="space-y-3">
       <div class="grid grid-cols-4 gap-2">
         <div><label class="lbl">Ikon</label><input id="q-emoji" maxlength="4" class="inp text-center" placeholder="🍚"></div>
-        <div class="col-span-3"><label class="lbl">Nama item</label><input id="q-nama" class="inp" placeholder="Misal: Lauk ayam"></div>
+        <div class="col-span-3"><label class="lbl">Nama item</label><input id="q-nama" class="inp" placeholder="Misal: Belanja dapur"></div>
       </div>
       <div class="grid grid-cols-2 gap-2">
-        <div><label class="lbl">Harga (Rp)</label><input id="q-harga" type="number" inputmode="numeric" min="1" class="inp" placeholder="8000"></div>
+        <div><label class="lbl">Harga (Rp)</label><input id="q-harga" type="number" inputmode="numeric" min="1" class="inp" placeholder="50000"></div>
         <div><label class="lbl">Kategori</label><select id="q-kategori" class="inp"></select></div>
       </div>
       <input type="hidden" id="q-id">
@@ -236,7 +244,7 @@ tailwind.config = {
         <div><label class="lbl">Ikon</label><input id="c-emoji" maxlength="4" class="inp text-center" placeholder="📚"></div>
         <div class="col-span-3"><label class="lbl">Nama kategori</label><input id="c-nama" class="inp" placeholder="Misal: Reksadana / Saham"></div>
       </div>
-      <label class="flex items-center gap-2 text-[11px] text-slate-600"><input type="checkbox" id="c-amplop"> Hitung ke amplop mingguan (jajan/lauk)</label>
+      <label class="flex items-center gap-2 text-[11px] text-slate-600"><input type="checkbox" id="c-amplop"> Hitung ke amplop mingguan</label>
       <label class="flex items-center gap-2 text-[11px] text-slate-600"><input type="checkbox" id="c-darurat"> Hitung sebagai Tabungan Dana Darurat</label>
       <label class="flex items-center gap-2 text-[11px] text-slate-600"><input type="checkbox" id="c-investasi"> Hitung sebagai Tabungan Investasi</label>
       <input type="hidden" id="c-id">
@@ -249,9 +257,13 @@ tailwind.config = {
 
 <script>
 const KEY = 'santri_tracker_v2';
-const ADMIN_PIN = '16'; // PIN Admin Pusat
+const ADMIN_PIN = '16';
 let pendingAction = null;
 let chartInstance = null;
+
+if (typeof PROFILE_PHOTO_URL !== 'undefined' && PROFILE_PHOTO_URL) {
+  document.getElementById('header-avatar').src = PROFILE_PHOTO_URL;
+}
 
 function today() {
   const d = new Date(), p = n => String(n).padStart(2, '0');
@@ -265,28 +277,28 @@ const $ = id => document.getElementById(id);
 
 function defaultCats() {
   return [
-    { id: 'lauk', name: 'Tambahan Lauk / Makan', emoji: '🍽️', amplop: true, darurat: false, investasi: false },
-    { id: 'jajan', name: 'Jajan Kantin / Snack', emoji: '🍪', amplop: true, darurat: false, investasi: false },
-    { id: 'kuota', name: 'Kuota Internet', emoji: '📶', amplop: false, darurat: false, investasi: false },
-    { id: 'darurat', name: 'Dana Darurat', emoji: '🛡️', amplop: false, darurat: true, investasi: false },
-    { id: 'investasi', name: 'Investasi / Tabungan', emoji: '📈', amplop: false, darurat: false, investasi: true },
+    { id: 'lauk', name: 'Kebutuhan Dapur', emoji: '🛒', amplop: true, darurat: false, investasi: false },
+    { id: 'jajan', name: 'Jajan / Hiburan', emoji: '☕', amplop: true, darurat: false, investasi: false },
+    { id: 'kuota', name: 'Listrik & WiFi', emoji: '⚡', amplop: false, darurat: false, investasi: false },
+    { id: 'darurat', name: 'Dana Darurat', emoji: '🛡️️', amplop: false, darurat: true, investasi: false },
+    { id: 'investasi', name: 'Investasi Masa Depan', emoji: '📈', amplop: false, darurat: false, investasi: true },
     { id: 'lainnya', name: 'Lain-lain', emoji: '📦', amplop: false, darurat: false, investasi: false }
   ];
 }
 function defaultQuick() {
   return [
-    { id: 'q1', name: 'Lauk matang', emoji: '🍗', price: 8000, kategori: 'lauk' },
-    { id: 'q2', name: 'Gorengan', emoji: '🍤', price: 2000, kategori: 'jajan' },
-    { id: 'q3', name: 'Es teh', emoji: '🧋', price: 3000, kategori: 'jajan' }
+    { id: 'q1', name: 'Belanja Sayur', emoji: '🥬', price: 25000, kategori: 'lauk' },
+    { id: 'q2', name: 'Kopi / Snack', emoji: '☕', price: 15000, kategori: 'jajan' },
+    { id: 'q3', name: 'Galon Air', emoji: '🚰', price: 20000, kategori: 'lauk' }
   ];
 }
-function freshState() { return { cats: defaultCats(), quick: defaultQuick(), tx: [], weekly: 80000, goal: 300000, goalInvestasi: 500000 }; }
+function freshState() { return { cats: defaultCats(), quick: defaultQuick(), tx: [], weekly: 500000, goal: 5000000, goalInvestasi: 10000000 }; }
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const data = JSON.parse(raw);
-      if (!data.goalInvestasi) data.goalInvestasi = 500000;
+      if (!data.goalInvestasi) data.goalInvestasi = 10000000;
       return data;
     }
   } catch (e) {}
@@ -523,7 +535,7 @@ function hapusQuick() {
 function openKelola() {
   $('set-weekly').value = S.weekly;
   $('set-darurat').value = S.goal;
-  $('set-investasi').value = S.goalInvestasi || 500000;
+  $('set-investasi').value = S.goalInvestasi || 10000000;
   renderKelola();
   openModal('modal-kelola');
 }
