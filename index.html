@@ -112,7 +112,7 @@ tailwind.config = {
     <form onsubmit="tambahTransaksi(event)" class="space-y-3">
       <div class="grid grid-cols-2 gap-2">
         <button type="button" onclick="setType('pengeluaran')" id="btn-pengeluaran" class="py-2 px-3 rounded-xl text-xs font-bold transition-all">⬆ Pengeluaran</button>
-        <button type="button" onclick="setType('pemasukan')" id="btn-pemasukan" class="py-2 px-3 rounded-xl text-xs font-bold transition-all">⬇️ Pemasukan / Saku</button>
+        <button type="button" onclick="setType('pemasukan')" id="btn-pemasukan" class="py-2 px-3 rounded-xl text-xs font-bold transition-all">⬇ Pemasukan / Saku</button>
       </div>
       <div>
         <label class="lbl">Pilih Kategori</label>
@@ -459,4 +459,3 @@ function closeModal(id) { $(id).classList.add('hidden');$(id).classList.remove('
 </script>
 </body>
 </html>
-
